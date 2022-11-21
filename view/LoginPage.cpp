@@ -3,6 +3,7 @@
 //
 
 #include "LoginPage.h"
+#include "AdminPage.h"
 
 
 LoginPage::LoginPage() {
@@ -46,10 +47,12 @@ void LoginPage::login() {
     Login::LoginStatus status = login.login(username, password);
     if (status == Login::LoginStatus::SUCCESS) {
         cout << "登录成功" << endl;
-        Admin *admin;
+        Administrator *admin;
         Customer *customer;
         if (login.getCurUserInfo()->getIdentity() == 0) {
-            admin = new Admin(login.getCurUserInfo()->getUsername(), login.getCurUserInfo()->getPassword());
+            admin = new Administrator(login.getCurUserInfo()->getUsername(), login.getCurUserInfo()->getPassword());
+            AdminPage adminPage(admin);
+            adminPage.show();
         } else {
 
         }

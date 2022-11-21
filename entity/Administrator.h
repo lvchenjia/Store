@@ -1,8 +1,11 @@
+#ifndef ADMINISTRATOR_H
+#define ADMINISTRATOR_H
+
 #include <string>
 using namespace std;
-class Admin {
+class Administrator {
 public:
-    Admin(const string &username, const string &password);
+    Administrator(const string &username, const string &password);
 
     const string &getUsername() const;
 
@@ -16,3 +19,5 @@ private:
     string username;
     string password;
 };
+
+#endif

@@ -36,7 +36,7 @@ void RegisterPage::registerAdmin() {
     cout << "请输入密码：";
     cin >> password;
     Register reg;
-    Admin admin(username, password);
+    Administrator admin(username, password);
     Register::RegisterStatus status = reg.registerAdmin(admin);
     if (status == Register::RegisterStatus::SUCCESS) {
         cout << "注册成功" << endl;

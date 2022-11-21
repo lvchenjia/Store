@@ -7,7 +7,7 @@
 
 #include "../dao/Database.h"
 #include "../entity/User.h"
-#include "../entity/Admin.h"
+#include "../entity/Administrator.h"
 #include "../entity/Customer.h"
 #include <string>
 #include <vector>
@@ -22,7 +22,7 @@ public:
     enum RegisterStatus {
         SUCCESS, USERNAME_EXIST, DATABASE_ERROR
     };
-    RegisterStatus registerAdmin(const Admin &admin);
+    RegisterStatus registerAdmin(const Administrator &admin);
     RegisterStatus registerCustomer(const Customer &customer);
 };
 

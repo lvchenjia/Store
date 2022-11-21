@@ -35,7 +35,7 @@ public:
     int insert(string sql);
 	int update(string table, string col, string values, string condition);
     int update(string sql);
-	int del(string table, string condition);
-    int del(string sql);
+	int deleteRow(string table, string condition);
+    int deleteRow(string sql);
 };
 

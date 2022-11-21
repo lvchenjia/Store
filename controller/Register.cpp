@@ -8,7 +8,7 @@ Register::Register() {
     database = new Database();
 }
 
-Register::RegisterStatus Register::registerAdmin(const Admin &admin) {
+Register::RegisterStatus Register::registerAdmin(const Administrator &admin) {
     try{
         cout<<admin.getUsername()<<endl;
         QueryResult result = database->select("select username from users where username = '" + admin.getUsername() + "'");

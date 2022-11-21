@@ -69,13 +69,13 @@ int Database::update(string sql)
     return db.executeSQL(sql.c_str());
 }
 
-int Database::del(string table, string condition)
+int Database::deleteRow(string table, string condition)
 {
 	string sql = "delete from " + table + condition;
 	return db.executeSQL(sql.c_str());
 }
 
-int Database::del(string sql)
+int Database::deleteRow(string sql)
 {
     return db.executeSQL(sql.c_str());
 }
