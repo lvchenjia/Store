@@ -1,7 +1,8 @@
 #ifndef STORE_REGISTERPAGE_H
 #define STORE_REGISTERPAGE_H
 
-#include "../controller/Register.h"
+#include "../controller/CustomerController.h"
+#include "../controller/AdminController.h"
 #include <iostream>
 #include <string>
 using namespace std;

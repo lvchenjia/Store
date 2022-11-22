@@ -5,7 +5,7 @@
 #ifndef TIME_H
 #define TIME_H
 
-
+#include "Utility.h"
 #include <time.h>
 #include <string>
 using namespace std;
@@ -22,6 +22,8 @@ public:
     Time();
 
     Time(int year, int month, int day, int hour, int minute, int second);
+
+    Time(string time);
 
     int getYear() const;
 
@@ -47,7 +49,7 @@ public:
 
     void setSecond(int second);
 
-    string toString();
+    string toString() const;
 };
 
 #endif

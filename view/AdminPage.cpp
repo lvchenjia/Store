@@ -6,10 +6,21 @@
 
 AdminPage::AdminPage(Administrator *admin) {
     currentAdmin = admin;
-    adminController = new Admin(admin);
+    adminController = new AdminController();
+    customerController = new CustomerController();
+    commodityController = new CommodityController();
+    orderController = new OrderController();
+}
+
+AdminPage::~AdminPage() {
+    delete adminController;
+    delete customerController;
+    delete commodityController;
+    delete orderController;
 }
 
 void AdminPage::show() {
+    cout  << currentAdmin->getUsername() << "管理员，您好！" << endl;
     showAdminMenu();
 }
 
@@ -19,7 +30,8 @@ void AdminPage::showAdminMenu() {
         cout << "1.管理员管理" << endl;
         cout << "2.顾客管理" << endl;
         cout << "3.商品管理" << endl;
-        cout << "4.退出" << endl;
+        cout << "4.订单管理" << endl;
+        cout << "5.退出" << endl;
         cout << "==============================" << endl;
         cout << "请输入选项：";
         int option;
@@ -35,7 +47,9 @@ void AdminPage::showAdminMenu() {
                 showCommoditiesAdminMenu();
                 break;
             case 4:
-                exit(0);
+                break;
+            case 5:
+                return;
             default:
                 cout << "输入错误，请重新输入" << endl;
         }
@@ -141,6 +155,38 @@ void AdminPage::showCommoditiesAdminMenu() {
     }
 }
 
+void AdminPage::showOrdersAdminMenu() {
+    while (true) {
+        cout << "==============================" << endl;
+        cout << "1.添加订单" << endl;
+        cout << "2.删除订单" << endl;
+        cout << "3.修改订单" << endl;
+        cout << "4.显示订单" << endl;
+        cout << "5.返回" << endl;
+        cout << "==============================" << endl;
+        cout << "请输入选项：";
+        int option;
+        cin >> option;
+        switch (option) {
+            case 1:
+                addOrder();
+                break;
+            case 2:
+                deleteOrder();
+                break;
+            case 3:
+                updateOrder();
+                break;
+            case 4:
+                showAllOrders();
+                break;
+            case 5:
+                return;
+            default:
+                cout << "输入错误，请重新输入" << endl;
+        }
+    }
+}
 
 
 void AdminPage::addAdmin() {
@@ -217,7 +263,7 @@ void AdminPage::addCustomer() {
     cin >> address;
     cout << "请输入电话：";
     cin >> phone;
-    StatusCode statusCode = adminController->addCustomer(Customer(username, password, nickname, address, phone));
+    StatusCode statusCode = customerController->addCustomer(Customer(username, password, nickname, address, phone));
     if (statusCode.isSuccess()) {
         cout << "添加成功" << endl;
     } else {
@@ -230,7 +276,7 @@ void AdminPage::deleteCustomer() {
     string username;
     cout << "请输入用户名：";
     cin >> username;
-    StatusCode statusCode = adminController->deleteCustomer(username);
+    StatusCode statusCode = customerController->deleteCustomer(username);
     if (statusCode.isSuccess()) {
         cout << "删除成功" << endl;
     } else {
@@ -258,7 +304,7 @@ void AdminPage::updateCustomer() {
     cin >> address;
     cout << "请输入新电话：";
     cin >> phone;
-    StatusCode statusCode = adminController->updateCustomer(Customer(username, password, nickname, address, phone), originUsername);
+    StatusCode statusCode = customerController->updateCustomer(Customer(username, password, nickname, address, phone), originUsername);
     if (statusCode.isSuccess()) {
         cout << "修改成功" << endl;
     } else {
@@ -268,7 +314,7 @@ void AdminPage::updateCustomer() {
 }
 
 void AdminPage::showAllCustomers() {
-    vector<Customer> customers = adminController->getAllCustomers();
+    vector<Customer> customers = customerController->getAllCustomers();
     cout << "用户列表：" << endl;
     vector<vector<string>> table;
     table.push_back(Customer::fields());
@@ -301,7 +347,7 @@ void AdminPage::addCommodity() {
     cin >> type;
     cout << "请输入商品是否进口：";
     cin >> isImported;
-    StatusCode statusCode = adminController->addCommodity(Commodity(id, name, description, price, stock, (CommodityType) type, isImported));
+    StatusCode statusCode = commodityController->addCommodity(Commodity(id, name, description, price, stock, (CommodityType) type, isImported));
     if (statusCode.isSuccess()) {
         cout << "添加成功" << endl;
     } else {
@@ -314,7 +360,7 @@ void AdminPage::deleteCommodity() {
     string id;
     cout << "请输入商品编号：";
     cin >> id;
-    StatusCode statusCode = adminController->deleteCommodity(id);
+    StatusCode statusCode = commodityController->deleteCommodity(id);
     if (statusCode.isSuccess()) {
         cout << "删除成功" << endl;
     } else {
@@ -336,7 +382,7 @@ void AdminPage::updateCommodity() {
     cin >> originId;
     cout<< "原商品信息" << endl;
 
-    Commodity commodity = adminController->getCommodityById(originId);
+    Commodity commodity = commodityController->getCommodityById(originId);
     if(commodity.getId().empty()){
         cout << "商品不存在" << endl;
         return;
@@ -358,7 +404,7 @@ void AdminPage::updateCommodity() {
     cin >> type;
     cout << "请输入新商品是否进口：";
     cin >> isImported;
-    StatusCode statusCode = adminController->updateCommodity(Commodity(id, name, description, price, stock, (CommodityType) type, isImported), originId);
+    StatusCode statusCode = commodityController->updateCommodity(Commodity(id, name, description, price, stock, (CommodityType) type, isImported), originId);
     if (statusCode.isSuccess()) {
         cout << "修改成功" << endl;
     } else {
@@ -368,7 +414,7 @@ void AdminPage::updateCommodity() {
 }
 
 void AdminPage::showAllCommodities() {
-    vector<Commodity> commodities = adminController->getAllCommodities();
+    vector<Commodity> commodities = commodityController->getAllCommodities();
     vector<vector<string>> table;
     table.push_back(Commodity::fields());
     for (Commodity commodity : commodities) {
@@ -376,3 +422,106 @@ void AdminPage::showAllCommodities() {
     }
     ShowTable::printTable(table);
 }
+
+
+
+void AdminPage::addOrder() {
+    string orderId;
+    string customerId;
+    string note;
+    double total;
+    cout << "请输入订单编号：";
+    cin >> orderId;
+    cout << "请输入用户编号：";
+    cin >> customerId;
+    cout << "请输入订单备注：";
+    cin >> note;
+    StatusCode statusCode = orderController->addOrder(Order(orderId, customerId, note, Time(), total, OrderStatus::UNPAID));
+    if (statusCode.isSuccess()) {
+        cout << "添加成功" << endl;
+    } else {
+        cout << "添加失败" << endl;
+        cout << statusCode.getMessage() << endl;
+    }
+}
+
+void AdminPage::deleteOrder() {
+    string orderId;
+    cout << "请输入订单编号：";
+    cin >> orderId;
+    StatusCode statusCode = orderController->deleteOrder(orderId);
+    if (statusCode.isSuccess()) {
+        cout << "删除成功" << endl;
+    } else {
+        cout << "删除失败" << endl;
+        cout << statusCode.getMessage() << endl;
+    }
+}
+
+void AdminPage::updateOrder() {
+    string originOrderId;
+    string orderId;
+    string customerId;
+    string note;
+    double total;
+    int status;
+    cout << "请输入原订单编号：";
+    cin >> originOrderId;
+    cout<< "原订单信息" << endl;
+
+    Order order = orderController->getOrderById(originOrderId);
+    if(order.getOrderId().empty()){
+        cout << "订单不存在" << endl;
+        return;
+    }
+    ShowTable::printTable({order.fields(), order.toVector()});
+
+    cout << "请输入新订单编号：";
+    cin >> orderId;
+    cout << "请输入新用户编号：";
+    cin >> customerId;
+    cout << "请输入新订单备注：";
+    cin >> note;
+    cout << "订单状态 0-未支付 1-已支付 2-已发货 3-已收货 4-已取消"<< endl;
+    cout << "请输入新订单状态：";
+    cin >> status;
+    StatusCode statusCode = orderController->updateOrder(Order(orderId, customerId, note, Time(), total, (OrderStatus) status), originOrderId);
+    if (statusCode.isSuccess()) {
+        cout << "修改成功" << endl;
+    } else {
+        cout << "修改失败" << endl;
+        cout << statusCode.getMessage() << endl;
+    }
+}
+
+void AdminPage::showAllOrders() {
+    vector<Order> orders = orderController->getAllOrders();
+    vector<vector<string>> table;
+    table.push_back(Order::fields());
+    for (Order order : orders) {
+        table.push_back(order.toVector());
+    }
+    ShowTable::printTable(table);
+}
+
+void AdminPage::addOrderItem() {
+    string orderItemId;
+    string orderId;
+    string commodityId;
+    int quantity;
+    double originalPrice;
+    double discount;
+
+    cout << "请输入订单项编号：";
+    cin >> orderItemId;
+    cout << "请输入订单编号：";
+    cin >> orderId;
+    cout << "请输入商品编号：";
+    cin >> commodityId;
+    cout << "请输入商品数量：";
+    cin >> quantity;
+
+
+}
+
+

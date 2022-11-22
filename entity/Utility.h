@@ -14,6 +14,7 @@ using namespace std;
 class Utility {
 public:
     static string doubleToString(double d, int precision = 15);
+    static vector<string> split(const string &s, char delimiter);
 };
 
 

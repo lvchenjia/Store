@@ -6,7 +6,10 @@
 #define STORE_ADMINPAGE_H
 
 #include "ShowTable.h"
-#include "../controller/Admin.h"
+#include "../controller/AdminController.h"
+#include "../controller/CommodityController.h"
+#include "../controller/CustomerController.h"
+#include "../controller/OrderController.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,15 +18,21 @@ using namespace std;
 class AdminPage {
 public:
     AdminPage(Administrator *admin);
+    ~AdminPage();
     void show();
 private:
     Administrator *currentAdmin;
-    Admin *adminController;
+    AdminController *adminController;
+    CustomerController *customerController;
+    CommodityController *commodityController;
+    OrderController *orderController;
+
     void showAdminMenu();
 
     void showAdminsAdminMenu();
     void showCustomersAdminMenu();
     void showCommoditiesAdminMenu();
+    void showOrdersAdminMenu();
 
     void addAdmin();
     void deleteAdmin();
@@ -39,6 +48,12 @@ private:
     void deleteCommodity();
     void updateCommodity();
     void showAllCommodities();
+
+    void addOrder();
+    void deleteOrder();
+    void updateOrder();
+    void showAllOrders();
+
 
 };
 

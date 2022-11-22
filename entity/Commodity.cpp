@@ -83,6 +83,7 @@ string Commodity::getTypeString() const {
         case OTHER:
             return "其他";
     }
+    return "";
 }
 
 vector<string> Commodity::toVector() const {
@@ -98,6 +99,5 @@ vector<string> Commodity::toVector() const {
 }
 
 vector<string> Commodity::fields() {
-    vector<string> v = {"商品编号", "商品名称", "商品描述", "商品价格", "商品库存", "商品类型", "是否进口"};
-    return v;
+    return {"商品编号", "商品名称", "商品描述", "商品价格", "商品库存", "商品类型", "是否进口"};
 }

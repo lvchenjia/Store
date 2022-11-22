@@ -35,13 +35,14 @@ void RegisterPage::registerAdmin() {
     cin >> username;
     cout << "请输入密码：";
     cin >> password;
-    Register reg;
-    Administrator admin(username, password);
-    Register::RegisterStatus status = reg.registerAdmin(admin);
-    if (status == Register::RegisterStatus::SUCCESS) {
+    AdminController adminController;
+    Administrator administrator(username, password);
+    StatusCode statusCode = adminController.addAdmin(administrator);
+    if(statusCode.isSuccess()){
         cout << "注册成功" << endl;
-    } else if (status == Register::RegisterStatus::USERNAME_EXIST) {
-        cout << "用户已存在" << endl;
+    }else{
+        cout << "注册失败" << endl;
+        cout << statusCode.getMessage() << endl;
     }
 }
 
@@ -61,12 +62,13 @@ void RegisterPage::registerCustomer() {
     cin >> phone;
     cout << "请输入地址：";
     cin >> address;
-    Register reg;
-    Customer customer(username, password, nickname, address, phone);
-    Register::RegisterStatus status = reg.registerCustomer(customer);
-    if (status == Register::RegisterStatus::SUCCESS) {
+    CustomerController customerController;
+    Customer customer(username, password, nickname, phone, address);
+    StatusCode statusCode = customerController.addCustomer(customer);
+    if(statusCode.isSuccess()){
         cout << "注册成功" << endl;
-    } else if (status == Register::RegisterStatus::USERNAME_EXIST) {
-        cout << "用户已存在" << endl;
+    }else{
+        cout << "注册失败" << endl;
+        cout << statusCode.getMessage() << endl;
     }
 }

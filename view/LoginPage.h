@@ -6,7 +6,7 @@
 #define STORE_LOGINPAGE_H
 
 #include <iostream>
-#include "../controller/Login.h"
+#include "../controller/UserController.h"
 #include "RegisterPage.h"
 using namespace std;
 

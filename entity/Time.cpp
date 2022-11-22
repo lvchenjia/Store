@@ -18,6 +18,18 @@ Time::Time(int year, int month, int day, int hour, int minute, int second) : yea
                                                                           minute(minute),
                                                                           second(second) {}
 
+Time::Time(string time) {
+    vector<string> timeList = Utility::split(time, ' ');
+    vector<string> dateList = Utility::split(timeList[0], '-');
+    vector<string> timeList2 = Utility::split(timeList[1], ':');
+    year = stoi(dateList[0]);
+    month = stoi(dateList[1]);
+    day = stoi(dateList[2]);
+    hour = stoi(timeList2[0]);
+    minute = stoi(timeList2[1]);
+    second = stoi(timeList2[2]);
+}
+
 int Time::getYear() const {
     return year;
 }
@@ -66,7 +78,7 @@ void Time::setSecond(int second) {
     Time::second = second;
 }
 
-string Time::toString() {
+string Time::toString() const {
     string s = to_string(year) + "-" + to_string(month) + "-" + to_string(day) + " " + to_string(hour) + ":" +
                to_string(minute) + ":" + to_string(second);
     return s;

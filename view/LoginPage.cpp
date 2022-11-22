@@ -43,23 +43,24 @@ void LoginPage::login() {
     cin >> username;
     cout << "请输入密码：";
     cin >> password;
-    Login login;
-    Login::LoginStatus status = login.login(username, password);
-    if (status == Login::LoginStatus::SUCCESS) {
-        cout << "登录成功" << endl;
-        Administrator *admin;
-        Customer *customer;
-        if (login.getCurUserInfo()->getIdentity() == 0) {
-            admin = new Administrator(login.getCurUserInfo()->getUsername(), login.getCurUserInfo()->getPassword());
+    UserController userController;
+    StatusCode statusCode = userController.login(username, password);
+    if (statusCode.isSuccess()) {
+        cout << statusCode.getMessage()<< endl;
+        if (username == "admin") {
+            Administrator *admin = new Administrator(username, password);
             AdminPage adminPage(admin);
             adminPage.show();
-        } else {
-
         }
-    } else if (status == Login::LoginStatus::PASSWORD_ERROR) {
-        cout << "密码错误" << endl;
-    } else if (status == Login::LoginStatus::USERNAME_ERROR) {
-        cout << "用户不存在" << endl;
+        else {
+//            Customer *customer = new Customer(username, password);
+//            CustomerPage customerPage(customer);
+//            customerPage.show();
+        }
+    }
+    else {
+        cout << statusCode.getMessage() << endl;
+        show();
     }
 }
 

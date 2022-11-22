@@ -7,6 +7,8 @@ using namespace std;
 
 class Customer {
 public:
+    Customer() = default;
+
     Customer(const string &username, const string &password, const string &nickname, const string &address,
              const string &phone);
 

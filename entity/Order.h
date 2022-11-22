@@ -1,9 +1,9 @@
 #ifndef ORDER_H
 #define ORDER_H
 
-#include "OrderItem.h"
 #include "Time.h"
-
+#include "Utility.h"
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -13,24 +13,26 @@ enum OrderStatus {
 
 class Order {
 public:
-    Order(int orderId, int customerId, const Time &createTime, const vector<OrderItem> &commodities,
-          double total, OrderStatus status);
+    Order() = default;
 
-    int getOrderId() const;
+    Order(const string &orderId, const string &customerId, const string &note, const Time &createTime, double total,
+          OrderStatus status);
 
-    void setOrderId(int orderId);
+    const string &getOrderId() const;
 
-    int getCustomerId() const;
+    void setOrderId(const string &orderId);
 
-    void setCustomerId(int customerId);
+    const string &getCustomerId() const;
+
+    void setCustomerId(const string &customerId);
+
+    const string &getNote() const;
+
+    void setNote(const string &note);
 
     const Time &getCreateTime() const;
 
     void setCreateTime(const Time &createTime);
-
-    const vector<OrderItem> &getCommodities() const;
-
-    void setCommodities(const vector<OrderItem> &commodities);
 
     double getTotal() const;
 
@@ -45,13 +47,23 @@ public:
     static vector<string> fields();
 
 private:
-    int orderId;
-    int customerId;
+    string orderId;
+    string customerId;
+    string note;
     Time createTime;
-    vector<OrderItem> commodities;
-    string orderItemsId;
     double total;
     OrderStatus status;
 };
 
 #endif
+
+
+//CREATE TABLE `orders` (
+//  `orderid` varchar(255) NOT NULL,
+//  `customerid` varchar(255) NOT NULL,
+//  `note` varchar(255) DEFAULT NULL,
+//  `createtime` datetime NOT NULL,
+//  `total` double NOT NULL,
+//  `status` int NOT NULL,
+//  PRIMARY KEY (`orderid`)
+//)
