@@ -111,7 +111,7 @@ StatusCode Admin::updateCustomer(const Customer &customer, const string &origina
 
 vector<Customer> Admin::getAllCustomers() {
     vector<Customer> customers;
-    QueryResult result = database->select("select username, password, nickname, address, phone from users, customers where users.username = customers.username and identity = 1");
+    QueryResult result = database->select("select users.username, password, nickname, address, phone from users,customers where users.username = customers.username and identity = 1");
     for(auto row : result.rows) {
         customers.emplace_back(Customer(row[0], row[1], row[2], row[3], row[4]));
     }
@@ -177,6 +177,15 @@ vector<Commodity> Admin::getAllCommodities() {
         commodities.emplace_back(Commodity(row[0], row[1], row[2], stod(row[3]), stoi(row[4]), (CommodityType)stoi(row[5]), stoi(row[6])));
     }
     return commodities;
+}
+
+Commodity Admin::getCommodityById(const std::string &id) {
+    QueryResult result = database->select("select id, name, description, price, stock, type, isimported from commodities where id = '" + id + "'");
+    if(result.rows.empty()) {
+        return Commodity();
+    }
+    auto row = result.rows[0];
+    return Commodity(row[0], row[1], row[2], stod(row[3]), stoi(row[4]), (CommodityType)stoi(row[5]), stoi(row[6]));
 }
 
 //CREATE TABLE `orders` (

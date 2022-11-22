@@ -43,3 +43,24 @@ const string &Customer::getPhone() const {
 void Customer::setPhone(const string &phone) {
     Customer::phone = phone;
 }
+
+vector<string> Customer::toVector() const {
+    vector<string> result;
+    result.push_back(username);
+    result.push_back(password);
+    result.push_back(nickname);
+    result.push_back(address);
+    result.push_back(phone);
+    return result;
+}
+
+vector<string> Customer::fields() {
+    vector<string> result;
+    result.push_back("username");
+    result.push_back("password");
+    result.push_back("nickname");
+    result.push_back("address");
+    result.push_back("phone");
+    return result;
+}
+

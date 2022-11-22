@@ -2,6 +2,7 @@
 #define CUSTOMER_H
 
 #include <string>
+#include <vector>
 using namespace std;
 
 class Customer {
@@ -29,7 +30,9 @@ public:
 
     void setPhone(const string &phone);
 
-public:
+    vector<string> toVector() const;
+
+    static vector<string> fields();
 
 private:
     string username;

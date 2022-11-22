@@ -1,16 +1,20 @@
 #ifndef COMMODITY_H
 #define COMMODITY_H
 
+#include "Utility.h"
 #include <string>
+#include <vector>
 using namespace std;
 
-//商品品类 1-食品 2-饮料 3-服装 4-电子产品 5-五金 6-其他
+//商品品类 0-食品 1-饮料 2-服装 3-电子产品 4-五金 5-其他
 enum CommodityType {
     FOOD, DRINKS ,CLOTHES, ELECTRONICS, HARDWARE, OTHER
 };
 
 class Commodity {
 public:
+    Commodity();
+
     Commodity(const string &id, const string &name, const string &description, double price, int stock,
               CommodityType type, bool isImported);
 
@@ -42,7 +46,11 @@ public:
 
     void setIsImported(bool isImported);
 
-public:
+    string getTypeString() const;
+
+    vector<string> toVector() const;
+
+    static vector<string> fields();
 
 private:
     string id;

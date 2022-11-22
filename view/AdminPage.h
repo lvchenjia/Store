@@ -5,6 +5,7 @@
 #ifndef STORE_ADMINPAGE_H
 #define STORE_ADMINPAGE_H
 
+#include "ShowTable.h"
 #include "../controller/Admin.h"
 #include <iostream>
 #include <string>
@@ -27,14 +28,18 @@ private:
     void addAdmin();
     void deleteAdmin();
     void updateAdmin();
+    void showAllAdmins();
+
     void addCustomer();
     void deleteCustomer();
     void updateCustomer();
+    void showAllCustomers();
+
     void addCommodity();
     void deleteCommodity();
     void updateCommodity();
+    void showAllCommodities();
 
-    void showCommodities();
 };
 
 

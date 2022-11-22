@@ -4,10 +4,10 @@
 #include <string>
 using namespace std;
 
-class CommodityInOrder {
+class OrderItem {
 public:
-    CommodityInOrder(const string &commodityId, const string &commodityName, int quantity, double originalPrice,
-                     double discount, double discountPrice, double total);
+    OrderItem(const string &commodityId, const string &commodityName, int quantity, double originalPrice,
+              double discount, double discountPrice, double total);
 
     const string &getCommodityId() const;
 
@@ -36,6 +36,8 @@ public:
     double getTotal() const;
 
     void setTotal(double total);
+
+
 
 private:
     string commodityId;

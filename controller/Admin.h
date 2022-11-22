@@ -27,12 +27,11 @@ public:
     StatusCode addAdmin(const Administrator &admin);
     StatusCode deleteAdmin(const string &username);
     StatusCode updateAdmin(const Administrator &admin, const string &originalUsername);
+    vector<Administrator> getAllAdmins();
 
     StatusCode addCustomer(const Customer &customer);
     StatusCode deleteCustomer(const string &username);
     StatusCode updateCustomer(const Customer &customer, const string &originalUsername);
-
-    vector<Administrator> getAllAdmins();
     vector<Customer> getAllCustomers();
 
     Administrator getCurrentAdmin();
@@ -42,6 +41,7 @@ public:
     StatusCode deleteCommodity(const string &id);
     StatusCode updateCommodity(const Commodity &commodity, const string &originalId);
     vector<Commodity> getAllCommodities();
+    Commodity getCommodityById(const string &id);
 
 //    //订单管理
 //    StatusCode addOrder(const Order &order);

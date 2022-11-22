@@ -1,5 +1,13 @@
 #include "Commodity.h"
 
+Commodity::Commodity() {
+    id = "";
+    name = "";
+    price = 0;
+    stock = 0;
+    description = "";
+}
+
 Commodity::Commodity(const string &id, const string &name, const string &description, double price, int stock,
                      CommodityType type, bool isImported) : id(id), name(name), description(description), price(price),
                                                             stock(stock), type(type), isImported_(isImported) {}
@@ -58,4 +66,38 @@ bool Commodity::isImported() const {
 
 void Commodity::setIsImported(bool isImported) {
     isImported_ = isImported;
+}
+
+string Commodity::getTypeString() const {
+    switch (type) {
+        case FOOD:
+            return "食品";
+        case DRINKS:
+            return "饮料";
+        case CLOTHES:
+            return "服装";
+        case ELECTRONICS:
+            return "电子产品";
+        case HARDWARE:
+            return "五金";
+        case OTHER:
+            return "其他";
+    }
+}
+
+vector<string> Commodity::toVector() const {
+    vector<string> v;
+    v.push_back(id);
+    v.push_back(name);
+    v.push_back(description);
+    v.push_back(Utility::doubleToString(price));
+    v.push_back(to_string(stock));
+    v.push_back(getTypeString());
+    v.push_back(isImported_ ? "是" : "否");
+    return v;
+}
+
+vector<string> Commodity::fields() {
+    vector<string> v = {"商品编号", "商品名称", "商品描述", "商品价格", "商品库存", "商品类型", "是否进口"};
+    return v;
 }

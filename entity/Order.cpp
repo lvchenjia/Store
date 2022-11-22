@@ -1,15 +1,15 @@
 #include "Order.h"
 
-Order::Order(int id, int customerId, const Time &createTime, const vector<CommodityInOrder> &commodities, double total,
-             OrderStatus status) : id(id), customerId(customerId), createTime(createTime), commodities(commodities),
-                                   total(total), status(status) {}
+Order::Order(int orderId, int customerId, const Time &createTime, const vector<OrderItem> &commodities,
+             double total, OrderStatus status) : orderId(orderId), customerId(customerId), createTime(createTime),
+                                                 commodities(commodities), total(total), status(status) {}
 
-int Order::getId() const {
-    return id;
+int Order::getOrderId() const {
+    return orderId;
 }
 
-void Order::setId(int id) {
-    Order::id = id;
+void Order::setOrderId(int orderId) {
+    Order::orderId = orderId;
 }
 
 int Order::getCustomerId() const {
@@ -28,11 +28,11 @@ void Order::setCreateTime(const Time &createTime) {
     Order::createTime = createTime;
 }
 
-const vector<CommodityInOrder> &Order::getCommodities() const {
+const vector<OrderItem> &Order::getCommodities() const {
     return commodities;
 }
 
-void Order::setCommodities(const vector<CommodityInOrder> &commodities) {
+void Order::setCommodities(const vector<OrderItem> &commodities) {
     Order::commodities = commodities;
 }
 

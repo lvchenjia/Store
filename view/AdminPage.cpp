@@ -38,7 +38,6 @@ void AdminPage::showAdminMenu() {
                 exit(0);
             default:
                 cout << "输入错误，请重新输入" << endl;
-                showAdminMenu();
         }
     }
 }
@@ -49,7 +48,8 @@ void AdminPage::showAdminsAdminMenu() {
         cout << "1.添加管理员" << endl;
         cout << "2.删除管理员" << endl;
         cout << "3.修改管理员" << endl;
-        cout << "4.返回" << endl;
+        cout << "4.显示所有管理员" << endl;
+        cout << "5.返回" << endl;
         cout << "==============================" << endl;
         cout << "请输入选项：";
         int option;
@@ -65,10 +65,12 @@ void AdminPage::showAdminsAdminMenu() {
                 updateAdmin();
                 break;
             case 4:
-                showAdminMenu();
+                showAllAdmins();
+                break;
+            case 5:
+                return;
             default:
                 cout << "输入错误，请重新输入" << endl;
-                showAdminsAdminMenu();
         }
     }
 }
@@ -79,7 +81,8 @@ void AdminPage::showCustomersAdminMenu() {
         cout << "1.添加顾客" << endl;
         cout << "2.删除顾客" << endl;
         cout << "3.修改顾客" << endl;
-        cout << "4.返回" << endl;
+        cout << "4.显示所有顾客" << endl;
+        cout << "5.返回" << endl;
         cout << "==============================" << endl;
         cout << "请输入选项：";
         int option;
@@ -95,10 +98,12 @@ void AdminPage::showCustomersAdminMenu() {
                 updateCustomer();
                 break;
             case 4:
-                showAdminMenu();
+                showAllCustomers();
+                break;
+            case 5:
+                return;
             default:
                 cout << "输入错误，请重新输入" << endl;
-                showCustomersAdminMenu();
         }
     }
 }
@@ -126,13 +131,12 @@ void AdminPage::showCommoditiesAdminMenu() {
                 updateCommodity();
                 break;
             case 4:
-                showCommodities();
+                showAllCommodities();
                 break;
             case 5:
-                showAdminMenu();
+                return;
             default:
                 cout << "输入错误，请重新输入" << endl;
-                showCommoditiesAdminMenu();
         }
     }
 }
@@ -184,6 +188,17 @@ void AdminPage::updateAdmin() {
         cout << "修改失败" << endl;
         cout << statusCode.getMessage() << endl;
     }
+}
+
+void AdminPage::showAllAdmins() {
+    vector<Administrator> administrators = adminController->getAllAdmins();
+    cout << "管理员列表：" << endl;
+    vector<vector<string>> table;
+    table.push_back(Administrator::fields());
+    for (Administrator administrator : administrators) {
+        table.push_back(administrator.toVector());
+    }
+    ShowTable::printTable(table);
 }
 
 void AdminPage::addCustomer() {
@@ -252,6 +267,17 @@ void AdminPage::updateCustomer() {
     }
 }
 
+void AdminPage::showAllCustomers() {
+    vector<Customer> customers = adminController->getAllCustomers();
+    cout << "用户列表：" << endl;
+    vector<vector<string>> table;
+    table.push_back(Customer::fields());
+    for (Customer customer : customers) {
+        table.push_back(customer.toVector());
+    }
+    ShowTable::printTable(table);
+}
+
 void AdminPage::addCommodity() {
     string id;
     string name;
@@ -270,7 +296,7 @@ void AdminPage::addCommodity() {
     cin >> price;
     cout << "请输入商品库存：";
     cin >> stock;
-    cout << "商品品类 1-食品 2-饮料 3-服装 4-电子产品 5-五金 6-其他"<< endl;
+    cout << "商品品类 0-食品 1-饮料 2-服装 3-电子产品 4-五金 5-其他"<< endl;
     cout << "请输入商品类型：";
     cin >> type;
     cout << "请输入商品是否进口：";
@@ -308,6 +334,15 @@ void AdminPage::updateCommodity() {
     bool isImported;
     cout << "请输入原商品编号：";
     cin >> originId;
+    cout<< "原商品信息" << endl;
+
+    Commodity commodity = adminController->getCommodityById(originId);
+    if(commodity.getId().empty()){
+        cout << "商品不存在" << endl;
+        return;
+    }
+    ShowTable::printTable({commodity.fields(), commodity.toVector()});
+
     cout << "请输入新商品编号：";
     cin >> id;
     cout << "请输入新商品名称：";
@@ -318,7 +353,7 @@ void AdminPage::updateCommodity() {
     cin >> price;
     cout << "请输入新商品库存：";
     cin >> stock;
-    cout << "商品品类 1-食品 2-饮料 3-服装 4-电子产品 5-五金 6-其他"<< endl;
+    cout << "商品品类 0-食品 1-饮料 2-服装 3-电子产品 4-五金 5-其他"<< endl;
     cout << "请输入新商品类型：";
     cin >> type;
     cout << "请输入新商品是否进口：";
@@ -332,53 +367,12 @@ void AdminPage::updateCommodity() {
     }
 }
 
-void printTable(vector<vector<string>> table){
-    int column = table[0].size();
-    int row = table.size();
-    int *columnWidth = new int[column];
-    for (int i = 0; i < column; ++i) {
-        columnWidth[i] = 0;
-    }
-    for (int i = 0; i < row; ++i) {
-        for (int j = 0; j < column; ++j) {
-            if (table[i][j].size() > columnWidth[j]){
-                columnWidth[j] = table[i][j].size();
-            }
-        }
-    }
-    for (int i = 0; i < row; ++i) {
-        for (int j = 0; j < column; ++j) {
-            cout << table[i][j];
-            for (int k = 0; k < columnWidth[j] - table[i][j].size(); ++k) {
-                cout << " ";
-            }
-            cout << " | ";
-        }
-        cout << endl;
-    }
-    delete[] columnWidth;
-}
-
-void AdminPage::showCommodities() {
+void AdminPage::showAllCommodities() {
     vector<Commodity> commodities = adminController->getAllCommodities();
     vector<vector<string>> table;
-    vector<string> headrow = {"商品编号", "商品名称", "商品描述", "商品价格", "商品库存", "商品类型", "是否进口"};
-    table.push_back(headrow);
+    table.push_back(Commodity::fields());
     for (Commodity commodity : commodities) {
-        vector<string> row;
-        row.push_back(commodity.getId());
-        row.push_back(commodity.getName());
-        row.push_back(commodity.getDescription());
-        row.push_back(to_string(commodity.getPrice()));
-        row.push_back(to_string(commodity.getStock()));
-        row.push_back(to_string(commodity.getType()));
-        row.push_back(to_string(commodity.isImported()));
-        table.push_back(row);
+        table.push_back(commodity.toVector());
     }
-    printTable(table);
+    ShowTable::printTable(table);
 }
-
-
-
-
-

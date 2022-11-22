@@ -1,7 +1,7 @@
 #ifndef ORDER_H
 #define ORDER_H
 
-#include "CommodityInOrder.h"
+#include "OrderItem.h"
 #include "Time.h"
 
 #include <vector>
@@ -13,12 +13,12 @@ enum OrderStatus {
 
 class Order {
 public:
-    Order(int id, int customerId, const Time &createTime, const vector<CommodityInOrder> &commodities, double total,
-          OrderStatus status);
+    Order(int orderId, int customerId, const Time &createTime, const vector<OrderItem> &commodities,
+          double total, OrderStatus status);
 
-    int getId() const;
+    int getOrderId() const;
 
-    void setId(int id);
+    void setOrderId(int orderId);
 
     int getCustomerId() const;
 
@@ -28,9 +28,9 @@ public:
 
     void setCreateTime(const Time &createTime);
 
-    const vector<CommodityInOrder> &getCommodities() const;
+    const vector<OrderItem> &getCommodities() const;
 
-    void setCommodities(const vector<CommodityInOrder> &commodities);
+    void setCommodities(const vector<OrderItem> &commodities);
 
     double getTotal() const;
 
@@ -40,11 +40,16 @@ public:
 
     void setStatus(OrderStatus status);
 
+    vector<string> toVector() const;
+
+    static vector<string> fields();
+
 private:
-    int id;
+    int orderId;
     int customerId;
     Time createTime;
-    vector<CommodityInOrder> commodities;
+    vector<OrderItem> commodities;
+    string orderItemsId;
     double total;
     OrderStatus status;
 };
