@@ -8,6 +8,9 @@ DbConnection::DbConnection(const char* host, const char* username, const char* p
      //通过设定数据库连接主机地址host、端口号3306，用户名username、密码passowrd和数据库名database等，建立与MySQL数据库的连接，连接失败抛出异常
      if(NULL == mysql_real_connect(&connection, host, username, password, database, 3306, nullptr, 0))
         throw DbException(mysql_error(&connection));
+     //数据库自动重连
+    char value = 1;
+    mysql_options(&connection, MYSQL_OPT_RECONNECT, &value);
     //设置查询编码为UTF8
     mysql_query(&connection, "set names utf8");
 }

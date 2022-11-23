@@ -19,13 +19,13 @@ private:
     string username = "root";
     string password = "123456";
     string database = "store";
+    DbConnection db;
 	
 	static vector<string> getColNames(MYSQL_RES res);
 	static vector<vector<string>> getRows(MYSQL_RES res);
 	
 public:
 	Database();
-
     Database(const string &host, const string &username, const string &password, const string &database);
 
     QueryResult select(string col, string table, string condition="");
