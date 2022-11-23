@@ -8,7 +8,7 @@ using namespace std;
 
 class OrderItem {
 public:
-
+    OrderItem() = default;
 
     OrderItem(const string &orderItemId, const string &orderId, const string &commodityId, const string &commodityName,
               int quantity, double originalPrice, double discount, double discountPrice, double total);

@@ -1,12 +1,14 @@
 #include "Database.h"
 #include <iostream>
-Database::Database():db(host, username, password, database){}
 
-Database::Database(string host, string username, string password, string database)
-	:db(host.c_str(), username.c_str(), password.c_str(), database.c_str()) {}
+Database::Database() {}
+
+Database::Database(const string &host, const string &username, const string &password, const string &database) : host(
+        host), username(username), password(password), database(database) {}
 
 QueryResult Database::select(string col, string table, string condition)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
 	string sql = "select " + col + " from " + table + " " + condition;
 	MYSQL_RES res = db.executeQuery(sql.c_str());
 	QueryResult result;
@@ -17,6 +19,7 @@ QueryResult Database::select(string col, string table, string condition)
 
 QueryResult Database::select(string sql)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
 	MYSQL_RES res = db.executeQuery(sql.c_str());
 	QueryResult result;
 	result.fileds = getColNames(res);
@@ -26,6 +29,7 @@ QueryResult Database::select(string sql)
 
 int Database::insert(string table, string col, string values)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
 	string sql = "insert into " + table + "(" + col + ") values(" + values + ")";
     cout<< sql << endl;
 	return db.executeSQL(sql.c_str());
@@ -55,28 +59,33 @@ int Database::insert(string table, string col, string values)
 
 int Database::insert(string sql)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
     return db.executeSQL(sql.c_str());
 }
 
 int Database::update(string table, string col, string values, string condition)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
 	string sql = "update " + table + " set " + col + "=" + values + condition;
 	return db.executeSQL(sql.c_str());
 }
 
 int Database::update(string sql)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
     return db.executeSQL(sql.c_str());
 }
 
 int Database::deleteRow(string table, string condition)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
 	string sql = "delete from " + table + condition;
 	return db.executeSQL(sql.c_str());
 }
 
 int Database::deleteRow(string sql)
 {
+    DbConnection db(host.c_str(), username.c_str(), password.c_str(), database.c_str());
     return db.executeSQL(sql.c_str());
 }
 

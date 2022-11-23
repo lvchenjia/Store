@@ -63,11 +63,33 @@ vector<Commodity> CommodityController::getAllCommodities() {
     return commodities;
 }
 
-Commodity CommodityController::getCommodityById(const std::string &id) {
+Commodity CommodityController::getCommodityById(const string &id) {
     QueryResult result = database->select("select id, name, description, price, stock, type, isimported from commodities where id = '" + id + "'");
     if(result.rows.empty()) {
         return Commodity();
     }
     auto row = result.rows[0];
     return Commodity(row[0], row[1], row[2], stod(row[3]), stoi(row[4]), (CommodityType)stoi(row[5]), stoi(row[6]));
+}
+
+int CommodityController::getCommodityStockById(const string &id) {
+    QueryResult result = database->select("select stock from commodities where id = '" + id + "'");
+    if(result.rows.empty()) {
+        return 0;
+    }
+    return stoi(result.rows[0][0]);
+}
+
+StatusCode CommodityController::updateCommodityStockById(const string &id, int stock) {
+    try{
+        QueryResult result = database->select("select id from commodities where id = '" + id + "'");
+        if(result.rows.empty()) {
+            return StatusCode(1, "商品编号不存在");
+        }
+        database->update("update commodities set stock = " + to_string(stock) + " where id = '" + id + "'");
+    }
+    catch (DbException e){
+        return StatusCode(2, "数据库错误:"+e.getMsg());
+    }
+    return StatusCode(0, "修改成功");
 }

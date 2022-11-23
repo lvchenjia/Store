@@ -25,18 +25,17 @@ void AdminPage::show() {
 }
 
 void AdminPage::showAdminMenu() {
+    int choice;
     while (true) {
-        cout << "==============================" << endl;
-        cout << "1.管理员管理" << endl;
-        cout << "2.顾客管理" << endl;
-        cout << "3.商品管理" << endl;
-        cout << "4.订单管理" << endl;
-        cout << "5.退出" << endl;
-        cout << "==============================" << endl;
-        cout << "请输入选项：";
-        int option;
-        cin >> option;
-        switch (option) {
+        cout << "1. 管理员管理" << endl;
+        cout << "2. 顾客管理" << endl;
+        cout << "3. 商品管理" << endl;
+        cout << "4. 订单管理" << endl;
+        cout << "5. 订单项管理" << endl;
+        cout << "6. 退出" << endl;
+        cout << "请输入您的选择：";
+        cin >> choice;
+        switch (choice) {
             case 1:
                 showAdminsAdminMenu();
                 break;
@@ -47,11 +46,16 @@ void AdminPage::showAdminMenu() {
                 showCommoditiesAdminMenu();
                 break;
             case 4:
+                showOrdersAdminMenu();
                 break;
             case 5:
+                showOrderItemsAdminMenu();
+                break;
+            case 6:
                 return;
             default:
-                cout << "输入错误，请重新输入" << endl;
+                cout << "输入错误，请重新输入！" << endl;
+                break;
         }
     }
 }
@@ -161,8 +165,9 @@ void AdminPage::showOrdersAdminMenu() {
         cout << "1.添加订单" << endl;
         cout << "2.删除订单" << endl;
         cout << "3.修改订单" << endl;
-        cout << "4.显示订单" << endl;
-        cout << "5.返回" << endl;
+        cout << "4.显示所有订单" << endl;
+        cout << "5.显示订单详情" << endl;
+        cout << "6.返回" << endl;
         cout << "==============================" << endl;
         cout << "请输入选项：";
         int option;
@@ -181,6 +186,9 @@ void AdminPage::showOrdersAdminMenu() {
                 showAllOrders();
                 break;
             case 5:
+                showOrderDetails();
+                break;
+            case 6:
                 return;
             default:
                 cout << "输入错误，请重新输入" << endl;
@@ -188,6 +196,38 @@ void AdminPage::showOrdersAdminMenu() {
     }
 }
 
+void AdminPage::showOrderItemsAdminMenu() {
+    while (true) {
+        cout << "==============================" << endl;
+        cout << "1.添加订单项" << endl;
+        cout << "2.删除订单项" << endl;
+        cout << "3.修改订单项" << endl;
+        cout << "4.显示所有订单项" << endl;
+        cout << "5.返回" << endl;
+        cout << "==============================" << endl;
+        cout << "请输入选项：";
+        int option;
+        cin >> option;
+        switch (option) {
+            case 1:
+                addOrderItem();
+                break;
+            case 2:
+                deleteOrderItem();
+                break;
+            case 3:
+                updateOrderItem();
+                break;
+            case 4:
+                showAllOrderItems();
+                break;
+            case 5:
+                return;
+            default:
+                cout << "输入错误，请重新输入" << endl;
+        }
+    }
+}
 
 void AdminPage::addAdmin() {
     string name;
@@ -432,7 +472,7 @@ void AdminPage::addOrder() {
     double total;
     cout << "请输入订单编号：";
     cin >> orderId;
-    cout << "请输入用户编号：";
+    cout << "请输入顾客用户名：";
     cin >> customerId;
     cout << "请输入订单备注：";
     cin >> note;
@@ -478,7 +518,7 @@ void AdminPage::updateOrder() {
 
     cout << "请输入新订单编号：";
     cin >> orderId;
-    cout << "请输入新用户编号：";
+    cout << "请输入新顾客用户名：";
     cin >> customerId;
     cout << "请输入新订单备注：";
     cin >> note;
@@ -508,9 +548,12 @@ void AdminPage::addOrderItem() {
     string orderItemId;
     string orderId;
     string commodityId;
+    string commodityName;
     int quantity;
     double originalPrice;
     double discount;
+    double discountPrice;
+    double total;
 
     cout << "请输入订单项编号：";
     cin >> orderItemId;
@@ -520,8 +563,134 @@ void AdminPage::addOrderItem() {
     cin >> commodityId;
     cout << "请输入商品数量：";
     cin >> quantity;
+    cout << "请输入商品折扣：";
+    cin >> discount;
 
+    Commodity commodity = commodityController->getCommodityById(commodityId);
+    if(commodity.getId().empty()){
+        cout << "商品不存在" << endl;
+        return;
+    }
+    commodityName = commodity.getName();
+    originalPrice = commodity.getPrice();
+    discountPrice = originalPrice * discount;
+    total = discountPrice * quantity;
 
+    StatusCode statusCode = orderController->addOrderItem(OrderItem(orderItemId, orderId, commodityId, commodityName, quantity, originalPrice, discount, discountPrice, total));
+    if (statusCode.isSuccess()) {
+        cout << "添加成功" << endl;
+    } else {
+        cout << "添加失败" << endl;
+        cout << statusCode.getMessage() << endl;
+    }
 }
 
+void AdminPage::deleteOrderItem() {
+    string orderItemId;
+    cout << "请输入订单项编号：";
+    cin >> orderItemId;
+    StatusCode statusCode = orderController->deleteOrderItem(orderItemId);
+    if (statusCode.isSuccess()) {
+        cout << "删除成功" << endl;
+    } else {
+        cout << "删除失败" << endl;
+        cout << statusCode.getMessage() << endl;
+    }
+}
+
+void AdminPage::updateOrderItem() {
+    string originOrderItemId;
+    string orderItemId;
+    string orderId;
+    string commodityId;
+    string commodityName;
+    int quantity;
+    double originalPrice;
+    double discount;
+    double discountPrice;
+    double total;
+
+    cout << "请输入原订单项编号：";
+    cin >> originOrderItemId;
+    cout<< "原订单项信息" << endl;
+
+    OrderItem orderItem = orderController->getOrderItemById(originOrderItemId);
+    if(orderItem.getOrderItemId().empty()){
+        cout << "订单项不存在" << endl;
+        return;
+    }
+    ShowTable::printTable({orderItem.fields(), orderItem.toVector()});
+
+    cout << "请输入新订单项编号：";
+    cin >> orderItemId;
+    cout << "请输入新订单编号：";
+    cin >> orderId;
+    cout << "请输入新商品编号：";
+    cin >> commodityId;
+    cout << "请输入新商品数量：";
+    cin >> quantity;
+    cout << "请输入新商品折扣：";
+    cin >> discount;
+
+    Commodity commodity = commodityController->getCommodityById(commodityId);
+    if(commodity.getId().empty()){
+        cout << "商品不存在" << endl;
+        return;
+    }
+    commodityName = commodity.getName();
+    originalPrice = commodity.getPrice();
+    discountPrice = originalPrice * discount;
+    total = discountPrice * quantity;
+
+    StatusCode statusCode = orderController->updateOrderItem(OrderItem(orderItemId, orderId, commodityId, commodityName, quantity, originalPrice, discount, discountPrice, total), originOrderItemId);
+    if (statusCode.isSuccess()) {
+        cout << "修改成功" << endl;
+    } else {
+        cout << "修改失败" << endl;
+        cout << statusCode.getMessage() << endl;
+    }
+}
+
+void AdminPage::showAllOrderItems() {
+    vector<OrderItem> orderItems = orderController->getAllOrderItems();
+    vector<vector<string>> table;
+    table.push_back(OrderItem::fields());
+    for (OrderItem orderItem : orderItems) {
+        table.push_back(orderItem.toVector());
+    }
+    ShowTable::printTable(table);
+}
+
+void AdminPage::showOrderItemsByOrderId() {
+    string orderId;
+    cout << "请输入订单编号：";
+    cin >> orderId;
+    vector<OrderItem> orderItems = orderController->getAllOrderItemsByOrderId(orderId);
+    vector<vector<string>> table;
+    table.push_back(OrderItem::fields());
+    for (OrderItem orderItem : orderItems) {
+        table.push_back(orderItem.toVector());
+    }
+    ShowTable::printTable(table);
+}
+
+void AdminPage::showOrderDetails() {
+    string orderId;
+    cout << "请输入订单编号：";
+    cin >> orderId;
+    cout<< "订单信息" << endl;
+    Order order = orderController->getOrderById(orderId);
+    if(order.getOrderId().empty()){
+        cout << "订单不存在" << endl;
+        return;
+    }
+    ShowTable::printTable({order.fields(), order.toVector()});
+    vector<OrderItem> orderItems = orderController->getAllOrderItemsByOrderId(orderId);
+    vector<vector<string>> table;
+    table.push_back(OrderItem::fields());
+    for (OrderItem orderItem : orderItems) {
+        table.push_back(orderItem.toVector());
+    }
+    ShowTable::printTable(table);
+}
 

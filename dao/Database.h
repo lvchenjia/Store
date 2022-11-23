@@ -15,20 +15,20 @@ struct QueryResult
 class Database
 {
 private:
-	const char* host = "localhost";
-	const char* username = "root";
-	const char* password = "123456";
-	const char* database = "store";
-	DbConnection db;
+    string host = "localhost";
+    string username = "root";
+    string password = "123456";
+    string database = "store";
 	
 	static vector<string> getColNames(MYSQL_RES res);
 	static vector<vector<string>> getRows(MYSQL_RES res);
 	
 public:
 	Database();
-	Database(string host, string username, string password, string database);
 
-	QueryResult select(string col, string table, string condition="");
+    Database(const string &host, const string &username, const string &password, const string &database);
+
+    QueryResult select(string col, string table, string condition="");
 	QueryResult select(string sql);
 	int insert(string table, string col, string values);
 	//int insert(string table...);

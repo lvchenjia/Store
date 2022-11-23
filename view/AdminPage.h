@@ -33,6 +33,7 @@ private:
     void showCustomersAdminMenu();
     void showCommoditiesAdminMenu();
     void showOrdersAdminMenu();
+    void showOrderItemsAdminMenu();
 
     void addAdmin();
     void deleteAdmin();
@@ -53,8 +54,13 @@ private:
     void deleteOrder();
     void updateOrder();
     void showAllOrders();
+    void showOrderDetails();
 
-
+    void addOrderItem();
+    void deleteOrderItem();
+    void updateOrderItem();
+    void showAllOrderItems();
+    void showOrderItemsByOrderId();
 };
 
 

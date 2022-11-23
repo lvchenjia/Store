@@ -32,6 +32,9 @@ public:
     StatusCode updateCommodity(const Commodity &commodity, const string &originalId);
     vector<Commodity> getAllCommodities();
     Commodity getCommodityById(const string &id);
+    //库存修改
+    int getCommodityStockById(const string &id);
+    StatusCode updateCommodityStockById(const string &id, int stock);
 private:
     Database *database;
 };

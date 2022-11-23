@@ -11,6 +11,7 @@
 #include "../entity/Order.h"
 #include "../entity/OrderItem.h"
 #include "StatusCode.h"
+#include "CommodityController.h"
 
 #include <string>
 #include <vector>
@@ -19,6 +20,7 @@ using namespace std;
 class OrderController {
 private:
     Database *database;
+    CommodityController commodityController;
 public:
     OrderController();
     ~OrderController();
@@ -32,10 +34,11 @@ public:
     StatusCode addOrderItem(const OrderItem &orderItem);
     StatusCode deleteOrderItem(const string &id);
     StatusCode updateOrderItem(const OrderItem &orderItem, const string &originalId);
+    OrderItem getOrderItemById(const string &id);
     vector<OrderItem> getAllOrderItems();
-    vector<OrderItem> getOrderItemsByOrderId(const string &orderId);
-
+    vector<OrderItem> getAllOrderItemsByOrderId(const string &orderId);
     vector<OrderItem> getOrderItemsByCommodityId(const string &commodityId);
+    StatusCode deleteAllOrderItemsByOrderId(const string &orderId);
 };
 
 
