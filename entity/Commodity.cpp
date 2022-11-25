@@ -86,6 +86,25 @@ string Commodity::getTypeString() const {
     return "";
 }
 
+string Commodity::getCommodityTypeString(int type) {
+    switch (type) {
+        case FOOD:
+            return "食品";
+        case DRINKS:
+            return "饮料";
+        case CLOTHES:
+            return "服装";
+        case ELECTRONICS:
+            return "电子产品";
+        case HARDWARE:
+            return "五金";
+        case OTHER:
+            return "其他";
+    }
+    return "";
+}
+
+
 vector<string> Commodity::toVector() const {
     vector<string> v;
     v.push_back(id);

@@ -48,6 +48,8 @@ public:
 
     string getTypeString() const;
 
+    static string getCommodityTypeString(int type);
+
     vector<string> toVector() const;
 
     static vector<string> fields();

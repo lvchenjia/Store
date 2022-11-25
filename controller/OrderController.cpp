@@ -56,10 +56,54 @@ StatusCode OrderController::updateOrder(const Order &order, const string &origin
     }
 }
 
+StatusCode OrderController::payOrder(const string &id) {
+    try{
+        QueryResult result = database->select("select * from orders where orderid = '" + id + "'");
+        if (result.rows.empty()) {
+            return {1, "订单号不存在"};
+        }
+        if (result.rows[0][5] == "1") {
+            return {2, "订单已被支付"};
+        }
+        double totalPrice = getTotalPriceByOrderId(id);
+        database->update("update orders set status = 1 where orderid = '" + id + "'");
+        database->update("update orders set total = " + to_string(totalPrice) +" where orderid = '" + id + "'");
+        return {0, "支付成功"};
+    }
+    catch (DbException e){
+        return {3, "数据库错误:"+e.getMsg()};
+    }
+}
+
+double OrderController::getTotalPriceByOrderId(const string &id) {
+    //计算总价
+    double totalPrice = 0;
+    vector<OrderItem> orderItems = getAllOrderItemsByOrderId(id);
+    for (auto &orderItem : orderItems) {
+        totalPrice+=orderItem.getTotal();
+    }
+    return totalPrice;
+
+}
+
 vector<Order> OrderController::getAllOrders() {
     vector<Order> orders;
     try{
         QueryResult result = database->select("select * from orders");
+        for (auto row : result.rows) {
+            orders.push_back(Order(row[0], row[1], row[2], Time(row[3]), stod(row[4]), (OrderStatus)stoi(row[5])));
+        }
+    }
+    catch (DbException e){
+        return orders;
+    }
+    return orders;
+}
+
+vector<Order> OrderController::getOrdersByCustomerName(const string &customerUsername) {
+    vector<Order> orders;
+    try{
+        QueryResult result = database->select("select * from orders where customerid = '" + customerUsername + "'");
         for (auto row : result.rows) {
             orders.push_back(Order(row[0], row[1], row[2], Time(row[3]), stod(row[4]), (OrderStatus)stoi(row[5])));
         }
@@ -207,7 +251,7 @@ StatusCode OrderController::deleteAllOrderItemsByOrderId(const std::string &orde
             int stock = commodityController.getCommodityStockById(row[2]);
             commodityController.updateCommodityStockById(row[2], stock + stoi(row[4]));
         }
-        database->update("delete from orderitem where orderid = '" + orderId + "'");
+        database->update("delete from orderitems where orderid = '" + orderId + "'");
         return {0, "删除成功"};
     }
     catch (DbException e){
@@ -225,5 +269,31 @@ OrderItem OrderController::getOrderItemById(const string &id) {
     }
     catch (DbException e){
         return OrderItem();
+    }
+}
+
+string OrderController::getLastOrderId() {
+    try{
+        QueryResult result = database->select("select orderid from orders order by orderid desc limit 1");
+        if (result.rows.empty()) {
+            return "0";
+        }
+        return result.rows[0][0];
+    }
+    catch (DbException e){
+        return "0";
+    }
+}
+
+string OrderController::getLastOrderItemId() {
+    try{
+        QueryResult result = database->select("select orderitemid from orderitems order by orderitemid desc limit 1");
+        if (result.rows.empty()) {
+            return "0";
+        }
+        return result.rows[0][0];
+    }
+    catch (DbException e){
+        return "0";
     }
 }

@@ -31,10 +31,13 @@ public:
     StatusCode deleteCommodity(const string &id);
     StatusCode updateCommodity(const Commodity &commodity, const string &originalId);
     vector<Commodity> getAllCommodities();
+    vector<vector<string>> getAllCommoditiesInfoForCustomer();
     Commodity getCommodityById(const string &id);
     //库存修改
     int getCommodityStockById(const string &id);
     StatusCode updateCommodityStockById(const string &id, int stock);
+
+    string getLastCommodityId();
 private:
     Database *database;
 };

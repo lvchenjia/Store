@@ -63,6 +63,21 @@ vector<Commodity> CommodityController::getAllCommodities() {
     return commodities;
 }
 
+vector<vector<string>> CommodityController::getAllCommoditiesInfoForCustomer() {
+    vector<vector<string>> commodities;
+    QueryResult result = database->select("select id, name, description, price, stock, type, isimported from commodities");
+    for(auto row : result.rows) {
+        string id = row[0];
+        string name = row[1]+(row[6]=="1"?"<I>":"");
+        string description = row[2];
+        string price = row[3];
+        string stock = row[4];
+        string type = Commodity::getCommodityTypeString((CommodityType)stoi(row[5]));
+        commodities.emplace_back(vector<string>{row[0], row[1], row[2], row[3], row[4], row[5], row[6]});
+    }
+    return commodities;
+}
+
 Commodity CommodityController::getCommodityById(const string &id) {
     QueryResult result = database->select("select id, name, description, price, stock, type, isimported from commodities where id = '" + id + "'");
     if(result.rows.empty()) {
@@ -92,4 +107,12 @@ StatusCode CommodityController::updateCommodityStockById(const string &id, int s
         return StatusCode(2, "数据库错误:"+e.getMsg());
     }
     return StatusCode(0, "修改成功");
+}
+
+string CommodityController::getLastCommodityId() {
+    QueryResult result = database->select("select id from commodities order by id desc limit 1");
+    if(result.rows.empty()) {
+        return "";
+    }
+    return result.rows[0][0];
 }

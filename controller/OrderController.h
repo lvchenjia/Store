@@ -28,8 +28,12 @@ public:
     StatusCode addOrder(const Order &order);
     StatusCode deleteOrder(const string &id);
     StatusCode updateOrder(const Order &order, const string &originalId);
+    StatusCode payOrder(const string &id);
+    double getTotalPriceByOrderId(const string &id);
     vector<Order> getAllOrders();
+    vector<Order> getOrdersByCustomerName(const string &customerUsername);
     Order getOrderById(const string &id);
+
 
     StatusCode addOrderItem(const OrderItem &orderItem);
     StatusCode deleteOrderItem(const string &id);
@@ -39,6 +43,10 @@ public:
     vector<OrderItem> getAllOrderItemsByOrderId(const string &orderId);
     vector<OrderItem> getOrderItemsByCommodityId(const string &commodityId);
     StatusCode deleteAllOrderItemsByOrderId(const string &orderId);
+
+    //权宜之计 用于获取最后一个订单号 以便生成新的订单号 若是把数据库中id改成int类型要改很多代码
+    string getLastOrderId();
+    string getLastOrderItemId();
 };
 
 

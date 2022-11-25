@@ -2,8 +2,11 @@
 #include <string>
 #include <vector>
 #include <mysql.h>
+#include <fstream>
+
 #include "DbException.h"
 #include "DbConnection.h"
+#include "Encrypt.h"
 using namespace std;
 
 struct QueryResult
@@ -19,14 +22,17 @@ private:
     string username = "root";
     string password = "123456";
     string database = "store";
-    DbConnection db;
+    DbConnection *db;
 	
 	static vector<string> getColNames(MYSQL_RES res);
 	static vector<vector<string>> getRows(MYSQL_RES res);
+
+    void readConfig();
 	
 public:
 	Database();
     Database(const string &host, const string &username, const string &password, const string &database);
+    ~Database();
 
     QueryResult select(string col, string table, string condition="");
 	QueryResult select(string sql);
